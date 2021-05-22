@@ -10,7 +10,7 @@ int main()
 {
     string nombre;
 
-    cout << "----------Proyecto Final----------"<<endl;
+    cout << "----------Proyecto Final---------0.-"<<endl;
 
     Supermarket* super = new Supermarket();
 
