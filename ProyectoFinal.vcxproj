@@ -146,7 +146,8 @@
     <ClCompile Include="ProyectoFinal.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Supermarket.h" />
+    <ClInclude Include="conexion.h" />
+    <ClInclude Include="Ventas.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

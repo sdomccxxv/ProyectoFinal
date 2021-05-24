@@ -2,7 +2,7 @@
 #include <string>
 #include <mysql.h>
 
-#include "Supermarket.h"
+#include "Ventas.h"
 
 using namespace std;
 
@@ -12,7 +12,7 @@ int main()
 
     cout << "----------Proyecto Final----------"<<endl;
 
-    Supermarket* super = new Supermarket();
+    Ventas* super = new Ventas();
 
     cout << "Ingrese nombre ";
     cin >> nombre;
