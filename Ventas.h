@@ -10,27 +10,17 @@ using namespace std;
 
 class Ventas
 {
-protected: int nofact, idcl, idemp, idpr;
+protected: int idcl, idemp, idpr;
 		 string serie, fechafact;
 
 public:
-
-	/*Ventas() {
-
-	}
-	Ventas(int nf, string ser, string ffact, int idc, int ide) {
-		nofact = nf;
-		serie = ser;
-		fechafact = ffact;
-		idcl = idc;
-		idemp = ide;
-	}*/
 
 	struct registroVentas {
 		float cantidad;
 		float precio;
 		float total;
 		float totalPagar;
+		int nofact = 1;
 	}factura[100];
 
 	string fecha() {
@@ -47,6 +37,7 @@ public:
 	int q_estado;
 	MYSQL_ROW fila;
 	MYSQL_RES* resultado;
+	registroVentas registro;
 
 	short z, x = 14, y = 12, f, cantcompra;
 	
@@ -105,17 +96,15 @@ public:
 	}
 
 	void ingresarventa(int id_c, int id_e) {
-		cn.abrir_conexion();
 
+		cn.abrir_conexion();
+		
 		if (cn.getConectar()) {
-			string nf = to_string(nofact);
+			int nf1 = numerofact();
+
+			string nf = to_string(nf1 + 1);
 			string idcl1 = to_string(id_c);
 			string idem = to_string(id_e);
-
-			/*START TRANSACTION;
-			INSERT INTO ventas(nofactura, serie, fechafactura, idcliente, idempleado, fechaingreso) VALUES(1, 'A', '2021-05-25', 2, 7, now());
-			INSERT INTO ventasdetalle(idventa, idProducto, cantidad, precio_unitario) VALUES (LAST_INSERT_ID(), 1, 1, 20);
-			COMMIT;*/
 
 			string insertv = "INSERT INTO ventas(nofactura, serie, fechafactura, idcliente, idempleado, fechaingreso) VALUES (" + nf + ", 'A', '" + fecha() + "', " + idcl1 + ", " + idem + ", now()); ";
 			
@@ -141,10 +130,8 @@ public:
 		x = 14;
 		y = 10;
 
-		registroVentas registro;
-
 		float acumulador = 0;
-		int prod, cant;
+		int prod, cant, nofactura = 1;
 		char SN;
 		string str, prodto, canti;
 
@@ -174,18 +161,18 @@ public:
 
 					if (mysql_num_rows(resultado) > 0) {
 						while (fila = mysql_fetch_row(resultado)) {
-							int precio = atoi(fila[6]);
-							string price = to_string(precio);
+							registro.precio = atoi(fila[6]);
+							string price = to_string(registro.precio);
 
 							gotoxy(x + 15, y);
 							cout << fila[3] << endl;
 							gotoxy(x + 47, y);
-							cin >> cant;
-							canti = to_string(cant);
+							cin >> registro.cantidad;
+							canti = to_string(registro.cantidad);
 							cin.ignore();
 
 							gotoxy(x + 60, y);
-							factura[f].total = cant * precio;
+							factura[f].total = registro.cantidad * registro.precio;
 							printf("%.2f", factura[f].total);
 							acumulador += factura[f].total;
 							fflush(stdin);
@@ -197,7 +184,7 @@ public:
 							q_estado = mysql_query(cn.getConectar(), i);
 
 							if (!q_estado) {
-								cout << "Ingreso exitoso..." << endl;
+								//cout << "Ingreso exitoso..." << endl;
 							}
 							else {
 								cout << "Error al ingresar venta detalle" << endl;
@@ -217,19 +204,53 @@ public:
 			gotoxy(80, 7);
 			fflush(stdin);
 			factura[f].totalPagar = acumulador;
+			gotoxy(60, 25);
+			printf("Total a pagar: %.2f", acumulador);
 
 			gotoxy(80, 7);
 			cout << "Agregar mas? (S/N): ";
 			gotoxy(100, 7);
 			cin >> SN;
 			f++;
-			cantcompra++;
 			y += 2;
 			
 		} while (SN == 'S' || SN == 's');
 
 		cn.cerrar_conexion();
-		gotoxy(60, y + 4);
-		printf("Total a pagar: %.2f", acumulador);
 	}	
+
+	int numerofact() {
+		int fact;
+		cn.abrir_conexion();
+
+		if (cn.getConectar()) {
+			string consulta = "SELECT MAX(nofactura) FROM ventas;";
+			const char* c = consulta.c_str();
+			q_estado = mysql_query(cn.getConectar(), c);
+
+			if (!q_estado) {
+				resultado = mysql_store_result(cn.getConectar());
+
+				unsigned int rows = mysql_num_rows(resultado);
+
+				if (mysql_num_rows(resultado) > 0) {
+					while (fila = mysql_fetch_row(resultado)) {
+						fact = atoi(fila[0]);
+						gotoxy(25, 2); cout << "No.: " << fact + 1;
+					}
+				}
+				else {
+					cout << "El NIT del cliente no se encuentra en la base, desea agregarlo S/N: ";
+				}
+			}
+			else {
+				cout << "Error al consultar..." << endl;
+				cout << consulta << endl << mysql_error(cn.getConectar()) << endl;
+			}
+		}
+		else {
+			cout << "Conexion fallida..." << endl;
+		}
+		return fact;
+	}
 };

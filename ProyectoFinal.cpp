@@ -28,19 +28,20 @@ int main()
 }
 
 void ventas() {
-
-
     string nombre, nit;
+    int nofact = 1;
 
     Ventas* super = new Ventas();
 
     gotoxy(5, 2);
     cout << "Fecha: " << super->fecha() << endl;
 
+    super->numerofact();
+    //gotoxy(25, 2); cout << "No.: " << nofact;
+
+    gotoxy(36, 2); cout << "Serie: ";
+
     gotoxy(5, 5); cout << "NIT: ";
     cin >> nit;
     super->buscarcl(nit);
-
-    
-
 }
