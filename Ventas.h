@@ -117,13 +117,24 @@ public:
 			INSERT INTO ventasdetalle(idventa, idProducto, cantidad, precio_unitario) VALUES (LAST_INSERT_ID(), 1, 1, 20);
 			COMMIT;*/
 
-			facturar();
-
-			string insertv = "START TRANSACTION; INSERT INTO ventas(nofactura, serie, fechafactura, idcliente, idempleado, fechaingreso) VALUES (" + nf + ", 'A', '" + fecha() + "', " + idcl1 + ", " + idem + ", now()); ";
+			string insertv = "INSERT INTO ventas(nofactura, serie, fechafactura, idcliente, idempleado, fechaingreso) VALUES (" + nf + ", 'A', '" + fecha() + "', " + idcl1 + ", " + idem + ", now()); ";
 			
+			const char* i = insertv.c_str();
+			q_estado = mysql_query(cn.getConectar(), i);
 
-
+			if (!q_estado) {
+				facturar();
+				//cout << "Ingreso exitoso..." << endl;
+			}
+			else {
+				cout << "Error al ingresar encabezado venta" << endl;
+				cout << insertv << endl << mysql_error(cn.getConectar()) << endl;
+			}
 		}
+		else {
+			cout << "Conexion fallida..." << endl;
+		}
+		cn.cerrar_conexion();
 	}
 
 	void facturar() {
@@ -132,11 +143,10 @@ public:
 
 		registroVentas registro;
 
-		int cant;
 		float acumulador = 0;
-		int prod;
+		int prod, cant;
 		char SN;
-		string str, prodto;
+		string str, prodto, canti;
 
 		gotoxy(10, 8); cout << "ID Producto ";
 		gotoxy(27, 8); cout << "Producto ";
@@ -165,18 +175,43 @@ public:
 					if (mysql_num_rows(resultado) > 0) {
 						while (fila = mysql_fetch_row(resultado)) {
 							int precio = atoi(fila[6]);
+							string price = to_string(precio);
 
 							gotoxy(x + 15, y);
 							cout << fila[3] << endl;
 							gotoxy(x + 47, y);
-							scanf("%f", &factura[f].cantidad);
+							cin >> cant;
+							canti = to_string(cant);
+							cin.ignore();
+
 							gotoxy(x + 60, y);
-							factura[f].total = factura[f].cantidad * precio;
+							factura[f].total = cant * precio;
 							printf("%.2f", factura[f].total);
 							acumulador += factura[f].total;
+							fflush(stdin);
+
+							gotoxy(x, y+10);
+							string str = "INSERT INTO ventasdetalle(idventa, idProducto, cantidad, precio_unitario) VALUES((SELECT MAX(idVenta) FROM ventas), " + prodto + ", " + canti + ", " + price +");";
+							
+							const char* i = str.c_str();
+							q_estado = mysql_query(cn.getConectar(), i);
+
+							if (!q_estado) {
+								cout << "Ingreso exitoso..." << endl;
+							}
+							else {
+								cout << "Error al ingresar venta detalle" << endl;
+								cout << str << endl << mysql_error(cn.getConectar()) << endl;
+								cn.cerrar_conexion();
+							}
+
 						}
 					}
 				}
+			}
+			else {
+				cout << "Conexion fallida..." << endl;
+				cn.cerrar_conexion();
 			}
 
 			gotoxy(80, 7);
@@ -190,10 +225,11 @@ public:
 			f++;
 			cantcompra++;
 			y += 2;
+			
 		} while (SN == 'S' || SN == 's');
 
+		cn.cerrar_conexion();
 		gotoxy(60, y + 4);
 		printf("Total a pagar: %.2f", acumulador);
-	}
-	
+	}	
 };
