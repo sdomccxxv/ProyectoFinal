@@ -16,10 +16,10 @@ protected: int idcl, idemp, idpr;
 public:
 
 	struct registroVentas {
-		float cantidad;
-		float precio;
-		float total;
-		float totalPagar;
+		float cantidad = 0;
+		float precio = 0;
+		float total = 0;
+		float totalPagar = 0;
 		int nofact = 1;
 	}factura[100];
 
@@ -55,15 +55,15 @@ public:
 			if (!q_estado) {
 				resultado = mysql_store_result(cn.getConectar());
 				
-				unsigned int rows = mysql_num_rows(resultado);
+				uint64_t rows = mysql_num_rows(resultado);
 
 				if (mysql_num_rows(resultado) > 0) {
 					while (fila = mysql_fetch_row(resultado)) {
-						gotoxy(25, 5);  cout << "Nombre: " << fila[1] << " " << fila[2] << endl;
+						gotoxy(25, 4);  cout << "Nombre: " << fila[1] << " " << fila[2] << endl;
 						int id = atoi(fila[0]);
 						int id_empl;
 
-						gotoxy(65, 5); cout << "Ingrese su ID de empleado: ";
+						gotoxy(65, 4); cout << "Ingrese su ID de empleado: ";
 						cin >> id_empl;
 
 						ingresarventa(id, id_empl);
@@ -131,7 +131,7 @@ public:
 		y = 10;
 
 		float acumulador = 0;
-		int prod, cant, nofactura = 1;
+		int prod, cant = 0, nofactura = 1;
 		char SN;
 		string str, prodto, canti;
 
@@ -157,11 +157,11 @@ public:
 				if (!q_estado) {
 					resultado = mysql_store_result(cn.getConectar());
 
-					unsigned int rows = mysql_num_rows(resultado);
+					uint64_t rows = mysql_num_rows(resultado);
 
 					if (mysql_num_rows(resultado) > 0) {
 						while (fila = mysql_fetch_row(resultado)) {
-							registro.precio = atoi(fila[6]);
+							registro.precio = stof(fila[6]);
 							string price = to_string(registro.precio);
 
 							gotoxy(x + 15, y);
@@ -220,7 +220,7 @@ public:
 	}	
 
 	int numerofact() {
-		int fact;
+		int fact = 0;
 		cn.abrir_conexion();
 
 		if (cn.getConectar()) {
@@ -231,12 +231,12 @@ public:
 			if (!q_estado) {
 				resultado = mysql_store_result(cn.getConectar());
 
-				unsigned int rows = mysql_num_rows(resultado);
+				uint64_t rows = mysql_num_rows(resultado);
 
 				if (mysql_num_rows(resultado) > 0) {
 					while (fila = mysql_fetch_row(resultado)) {
 						fact = atoi(fila[0]);
-						gotoxy(25, 2); cout << "No.: " << fact + 1;
+						gotoxy(25, 3); cout << "No.: " << fact + 1;
 					}
 				}
 				else {
@@ -252,5 +252,88 @@ public:
 			cout << "Conexion fallida..." << endl;
 		}
 		return fact;
+	}
+
+	void mostrarventa(int nofact) {
+
+		cn.abrir_conexion();
+
+		if (cn.getConectar()) {
+			string f = to_string(nofact);
+			string str = "SELECT idventa, nofactura, serie, fechafactura, c.nit, c.nombres, c.apellidos FROM ventas v INNER JOIN clientes c ON v.idcliente = c.idCliente WHERE nofactura = " + f;
+
+			const char* c = str.c_str();
+			q_estado = mysql_query(cn.getConectar(), c);
+
+			if (!q_estado) {
+				resultado = mysql_store_result(cn.getConectar());
+				while (fila = mysql_fetch_row(resultado)) {
+					system("cls");
+					gotoxy(5, 3);
+					cout << "Fecha: "<< fila[2];
+					gotoxy(25, 3);
+					cout << "No: " << fila[0];
+					gotoxy(36, 3);
+					cout << "Serie: " << fila[1];
+					gotoxy(5, 4);
+					cout << "NIT: " << fila[3];
+					gotoxy(25, 4);  cout << "Nombre: " << fila[4] << " " << fila[5] << endl;
+
+					gotoxy(10, 8); cout << "ID Producto ";
+					gotoxy(27, 8); cout << "Producto ";
+					gotoxy(57, 8); cout << "Cantidad ";
+					gotoxy(72, 8); cout << "Precio ";
+				}
+			}
+			else {
+				cout << "Error al consultar..." << endl;
+			}
+		}
+		else {
+			cout << "Conexion fallida..." << endl;
+		}
+		cn.cerrar_conexion();
+
+	}
+
+	void eliminarventa() {
+
+		int fact;
+		cout << "Ingrese la factura que desea eliminar: ";
+		cin >> fact;
+
+		cn.abrir_conexion();
+
+		if (cn.getConectar()) {
+
+			string f = to_string(fact);
+			string eliminard = "DELETE FROM ventasdetalle WHERE idventa = (SELECT idventa FROM ventas WHERE nofactura = '" + f + "');";
+			string eliminarv = "DELETE FROM ventas WHERE nofactura = '" + f + "';";
+
+			const char* i = eliminard.c_str();
+			q_estado = mysql_query(cn.getConectar(), i);
+
+			if (!q_estado) {
+				cout << "Eliminacion exitosa..." << endl;
+			}
+			else {
+				cout << "Error al eliminar..." << endl;
+				cout << eliminard << endl << mysql_error(cn.getConectar()) << endl;
+			}
+
+			const char* ii = eliminarv.c_str();
+			q_estado = mysql_query(cn.getConectar(), ii);
+
+			if (!q_estado) {
+				cout << "Eliminacion exitosa..." << endl;
+				return;
+			}
+			else {
+				cout << "Error al eliminar..." << endl;
+				cout << eliminarv << endl << mysql_error(cn.getConectar()) << endl;
+			}
+		}
+		
+
 	}
 };
