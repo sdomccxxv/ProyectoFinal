@@ -39,7 +39,7 @@ public:
 	MYSQL_RES* resultado;
 	registroVentas registro;
 
-	short z, x = 14, y = 12, f, cantcompra;
+	short z, x = 14, y = 10, f, cantcompra;
 	
 	void buscarcl(string nit) {
 		
@@ -143,7 +143,7 @@ public:
 		cn.abrir_conexion();
 
 		do {
-			gotoxy(x, y);
+			gotoxy(x+1, y-1);
 			cin >> prod;
 			prodto = to_string(prod);
 			cin.ignore();
@@ -256,33 +256,84 @@ public:
 
 	void mostrarventa(int nofact) {
 
+		int prod;
+		string prodto, canti;
+
 		cn.abrir_conexion();
 
 		if (cn.getConectar()) {
 			string f = to_string(nofact);
-			string str = "SELECT idventa, nofactura, serie, fechafactura, c.nit, c.nombres, c.apellidos FROM ventas v INNER JOIN clientes c ON v.idcliente = c.idCliente WHERE nofactura = " + f;
+			string strv = "SELECT idventa, nofactura, serie, fechafactura, c.nit, c.nombres, c.apellidos FROM ventas v INNER JOIN clientes c ON v.idcliente = c.idCliente WHERE nofactura = " + f;
 
-			const char* c = str.c_str();
+			const char* c = strv.c_str();
 			q_estado = mysql_query(cn.getConectar(), c);
 
 			if (!q_estado) {
 				resultado = mysql_store_result(cn.getConectar());
 				while (fila = mysql_fetch_row(resultado)) {
+
 					system("cls");
 					gotoxy(5, 3);
-					cout << "Fecha: "<< fila[2];
+					cout << "Fecha: "<< fila[3];
 					gotoxy(25, 3);
-					cout << "No: " << fila[0];
+					cout << "No: " << fila[1];
 					gotoxy(36, 3);
-					cout << "Serie: " << fila[1];
+					cout << "Serie: " << fila[2];
 					gotoxy(5, 4);
-					cout << "NIT: " << fila[3];
-					gotoxy(25, 4);  cout << "Nombre: " << fila[4] << " " << fila[5] << endl;
+					cout << "NIT: " << fila[4];
+					gotoxy(25, 4);  cout << "Nombre: " << fila[5] << " " << fila[6] << endl;
 
 					gotoxy(10, 8); cout << "ID Producto ";
 					gotoxy(27, 8); cout << "Producto ";
 					gotoxy(57, 8); cout << "Cantidad ";
 					gotoxy(72, 8); cout << "Precio ";
+
+					string idventa = to_string(atoi(fila[0]));
+
+					string strvd = "SELECT vd.idProducto, p.descripcion, vd.cantidad, (vd.cantidad * vd.precio_unitario) AS Precio FROM ventasdetalle vd INNER JOIN productos p ON vd.idProducto = p.idProducto WHERE idventa = " + idventa;
+
+					const char* cc = strvd.c_str();
+					q_estado = mysql_query(cn.getConectar(), cc);
+
+					if (!q_estado) {
+						resultado = mysql_store_result(cn.getConectar());
+
+						if (mysql_num_rows(resultado) > 0) {
+							y = 10;
+							x = 15;
+							while (fila = mysql_fetch_row(resultado)) {
+								
+								gotoxy(x, y++); cout << fila[0];
+								gotoxy(x + 15, y-1); cout << fila[1];
+								gotoxy(x + 47, y - 1); cout << atoi(fila[2]);
+								gotoxy(x + 60, y - 1); cout << stof(fila[3]);
+							}
+
+							char SN;
+							gotoxy(38, 20);
+							cout << "Desea modificar los productos vendidos (S/N): ";
+							cin >> SN;
+
+							if (SN == 'S' || SN == 's') {
+								facturar();
+								/*gotoxy(x, 9);
+								cin >> prod;
+								prodto = to_string(prod);
+								cin.ignore();
+								gotoxy(x + 15, 9);
+								cout << fila[3] << endl;
+								gotoxy(x + 47, 9);
+								cin >> registro.cantidad;
+								canti = to_string(registro.cantidad);
+								cin.ignore();*/
+								
+							}
+						}
+					}
+					else {
+						cout << "Error al consultar encabezado venta" << endl;
+						cout << strvd << endl << mysql_error(cn.getConectar()) << endl;
+					}
 				}
 			}
 			else {

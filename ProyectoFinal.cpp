@@ -147,8 +147,10 @@ void ventas() {
 }
 
 void mostrarventa() {
+
+    borde();
     int f;
-    cout << "Ingrese el numero de factura que desea modificar: ";
+    gotoxy(5, 4); cout << "Ingrese el numero de factura que desea modificar: ";
     cin >> f;
 
     super->mostrarventa(f);
