@@ -11,12 +11,14 @@
 #include "empleados.h"
 #include "gotoxy.h"
 #include "Marcas.h"
+#include "Proveedores.h"
 
 using namespace std;
 
 Ventas* super = new Ventas();
 empleados* emp = new empleados();
 Marcas* marc = new Marcas();
+Proveedores* prov = new Proveedores();
 int opcionm;
 
 void lineas(int x, int y, string xx) {
@@ -44,7 +46,7 @@ void borde() {
 
 void ventas();
 void menu();
-void crud(string tipo);
+void crud(string tipo, int opcionm);
 void mostrarventa();
 
 int main()
@@ -78,7 +80,7 @@ void menu() {
     gotoxy(68, 15);
     cin >> opcionm;
 
-    switch (opcion) {
+    switch (opcionm) {
     case 1: crud("INGRESAR", opcionm); break;
     case 2: crud("MOSTRAR", opcionm); break;
     case 3: crud("MODIFICAR", opcionm); break;
