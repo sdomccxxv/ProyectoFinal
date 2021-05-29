@@ -10,11 +10,13 @@
 #include "Ventas.h"
 #include "empleados.h"
 #include "gotoxy.h"
+#include "Marcas.h"
 
 using namespace std;
 
 Ventas* super = new Ventas();
 empleados* emp = new empleados();
+Marcas* marc = new Marcas();
 int opcionm;
 
 void lineas(int x, int y, string xx) {
@@ -55,6 +57,7 @@ int main()
 }
 
 void menu() {
+    int opcionm;
     system("cls");
     borde();
 
@@ -75,24 +78,24 @@ void menu() {
     gotoxy(68, 15);
     cin >> opcionm;
 
-    switch(opcionm) {
-        case 1: crud("INGRESAR"); break;
-        case 2: crud("MOSTRAR");
-        case 3: crud("MODIFICAR"); break;
-        case 4: crud("ELIMINAR"); break;
+    switch (opcion) {
+    case 1: crud("INGRESAR", opcionm); break;
+    case 2: crud("MOSTRAR", opcionm); break;
+    case 3: crud("MODIFICAR", opcionm); break;
+    case 4: crud("ELIMINAR", opcionm); break;
     }
 }
 
-void crud(string tipo) {
-    cout << opcionm;
+void crud(string tipo, int opcionm) {
     system("cls");
     borde();
 
-    int opcion;
+    int opcion = 0;
 
-    string str = tipo + " EN";
+
     gotoxy(54, 8);
-    cout << str;
+    string str = tipo + " A";
+
     gotoxy(50, 10);
     cout << "1. Clientes........ " << endl;
     gotoxy(50, 11);
@@ -116,24 +119,107 @@ void crud(string tipo) {
     gotoxy(70, 20);
     cin >> opcion;
 
-    switch (opcion) {
-        case 2:
-            switch (opcionm)
-            {
-            case 1: system("cls"); emp->crear(); break;
-            case 2: system("cls"); emp->leer(); break;
-            case 3: system("cls"); emp->actualizar(); break;
-            case 4: system("cls"); emp->eliminar(); break;
-            }
-        case 7: 
-            switch (opcionm) {
-                case 1: ventas(); break;
-                case 2: system("cls"); mostrarventa();  break;
-                case 3: system("cls"); super->eliminarventa(); break;
-            }
+    switch (opcion)
+    {
+        //Clientes--
+    case 1:
+        switch (opcionm)
+        {
+        case 1: cout << "Ingresar clientes"; break;
+        case 2: cout << "Mostrar clientes"; break;
+        case 3: cout << "Modificar clientes"; break;
+        case 4: cout << "Eliminar clientes"; break;
+        default:
             break;
-        case 9: menu();
+        }
+        break;
+        //Empleados
+    case 2:
+        switch (opcionm)
+        {
+        case 1: system("cls"); emp->crear(); break;
+        case 2: system("cls"); emp->leer(); break;
+        case 3: system("cls"); emp->actualizar(); break;
+        case 4: system("cls"); emp->eliminar(); break;
+        default:
             break;
+        }
+        break;
+        //Puestos--
+    case 3:
+        switch (opcionm)
+        {
+        case 1: cout << "Ingresar puestos"; break;
+        case 2: cout << "Mostrar puestos"; break;
+        case 3: cout << "Modificar puestos"; break;
+        case 4: cout << "Eliminar puestos"; break;
+        default:
+            break;
+        }
+        break;
+        //Productos--
+    case 4:
+        switch (opcionm)
+        {
+        case 1: cout << "Ingresar productos"; break;
+        case 2: cout << "Mostrar productos"; break;
+        case 3: cout << "Modificar productos"; break;
+        case 4: cout << "Eliminar productos"; break;
+        default:
+            break;
+        }
+        break;
+        //Marcas
+    case 5:
+        switch (opcionm)
+        {
+        case 1: system("cls"); marc->crear(); break;
+        case 2: system("cls"); marc->leer(); break;
+        case 3: system("cls"); marc->actualizar(); break;
+        case 4: system("cls"); marc->eliminar(); break;
+        default:
+            break;
+        }
+        break;
+        //Proveedores
+    case 6:
+        switch (opcionm)
+        {
+        case 1: system("cls"); prov->crear(); break;
+        case 2: system("cls"); prov->leer(); break;
+        case 3: system("cls"); prov->actualizar(); break;
+        case 4: system("cls"); prov->eliminar(); break;
+        default:
+            break;
+        }
+        break;
+        //Ventas
+    case 7:
+        switch (opcionm)
+        {
+        case 1: ventas(); break;
+        case 2: system("cls"); mostrarventa();  break;
+        case 3: system("cls"); super->eliminarventa(); break;
+        default:
+            break;
+        }
+        break;
+        //Compras
+    case 8:
+        switch (opcionm)
+        {
+        case 1: cout << "Ingresar Compras"; break;
+        case 2: cout << "Mostrar Compras"; break;
+        case 3: cout << "Modificar Compras"; break;
+        case 4: cout << "Eliminar Compras"; break;
+        default:
+            break;
+        }
+        break;
+        //Menu principal
+    case 9: menu(); break;
+    default:
+        break;
     }
 }
 

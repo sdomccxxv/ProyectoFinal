@@ -149,6 +149,8 @@
     <ClInclude Include="conexion.h" />
     <ClInclude Include="empleados.h" />
     <ClInclude Include="gotoxy.h" />
+    <ClInclude Include="Marcas.h" />
+    <ClInclude Include="Proveedores.h" />
     <ClInclude Include="Ventas.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
