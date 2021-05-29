@@ -29,9 +29,10 @@ public:
 			string marca;
 
 			cout << "Ingrese Marca: " << endl;
+			cin.ignore();
 			getline(cin, marca);
 
-			string insert = "INSERT INTO marcas(marca) VALUES ('" + marca + "'";
+			string insert = "INSERT INTO marcas(marca) VALUES ('" + marca + "')";
 			const char* i = insert.c_str();
 			q_estado = mysql_query(cn.getConectar(), i);
 			if (!q_estado) {

@@ -43,7 +43,7 @@ public:
 			cin >> t;
 			cin.ignore();
 
-			string insert = "INSERT INTO proveedores(nit,direccion,proveedor) VALUES ('" + nit + "','" + dir + "','" + proveedor + "')";
+			string insert = "INSERT INTO proveedores(nit,direccion,proveedor) VALUES ('" + nit + "','" + dir + "','" + proveedor + ", '" + t + "', now())";
 			const char* i = insert.c_str();
 			q_estado = mysql_query(cn.getConectar(), i);
 			if (!q_estado) {
