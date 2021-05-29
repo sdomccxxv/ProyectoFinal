@@ -8,11 +8,13 @@
 #include <mysql.h>
 
 #include "Ventas.h"
+#include "empleados.h"
 #include "gotoxy.h"
 
 using namespace std;
 
 Ventas* super = new Ventas();
+empleados* emp = new empleados();
 int opcionm;
 
 void lineas(int x, int y, string xx) {
@@ -63,21 +65,21 @@ void menu() {
     gotoxy(51, 10);
     cout << "1. Ingresar.....: " << endl;
     gotoxy(51, 11);
-    cout << "2. Modificar....: " << endl;
+    cout << "2. Mostrar......: " << endl;
     gotoxy(51, 12);
-    cout << "3. Eliminar.....: " << endl;
-    gotoxy(52, 14);
+    cout << "3. Modificar....: " << endl;
+    gotoxy(51, 13);
+    cout << "4. Eliminar.....: " << endl;
+    gotoxy(52, 15);
     cout << "Ingrese opcion: " << endl;
-    gotoxy(68, 14);
+    gotoxy(68, 15);
     cin >> opcionm;
 
     switch(opcionm) {
-        case 1: crud("INGRESAR");
-            break;
-        case 2: crud("MODIFICAR");
-            break;
-        case 3: crud("ELIMINAR");
-            break;
+        case 1: crud("INGRESAR"); break;
+        case 2: crud("MOSTRAR");
+        case 3: crud("MODIFICAR"); break;
+        case 4: crud("ELIMINAR"); break;
     }
 }
 
@@ -115,6 +117,14 @@ void crud(string tipo) {
     cin >> opcion;
 
     switch (opcion) {
+        case 2:
+            switch (opcionm)
+            {
+            case 1: system("cls"); emp->crear(); break;
+            case 2: system("cls"); emp->leer(); break;
+            case 3: system("cls"); emp->actualizar(); break;
+            case 4: system("cls"); emp->eliminar(); break;
+            }
         case 7: 
             switch (opcionm) {
                 case 1: ventas(); break;

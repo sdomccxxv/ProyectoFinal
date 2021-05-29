@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="conexion.h" />
+    <ClInclude Include="empleados.h" />
     <ClInclude Include="gotoxy.h" />
     <ClInclude Include="Ventas.h" />
   </ItemGroup>
