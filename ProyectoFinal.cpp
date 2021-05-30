@@ -13,6 +13,7 @@
 #include "Marcas.h"
 #include "Proveedores.h"
 #include "Cliente.h"
+#include "Puestos.h"
 
 using namespace std;
 
@@ -20,7 +21,8 @@ Ventas* super = new Ventas();
 empleados* emp = new empleados();
 Marcas* marc = new Marcas();
 Proveedores* prov = new Proveedores();
-Cliente* clie = new Cliente
+Cliente* clie = new Cliente();
+Puestos * pue = new Puestos();
 int opcionm;
 
 void lineas(int x, int y, string xx) {
@@ -153,10 +155,10 @@ void crud(string tipo, int opcionm) {
     case 3:
         switch (opcionm)
         {
-        case 1: cout << "Ingresar puestos"; break;
-        case 2: cout << "Mostrar puestos"; break;
-        case 3: cout << "Modificar puestos"; break;
-        case 4: cout << "Eliminar puestos"; break;
+        case 1: system("cls"); pue->crear(); break;
+        case 2: system("cls"); pue->leer(); break;
+        case 3: system("cls"); pue->actualizar(); break;
+        case 4: system("cls"); pue->eliminar(); break;
         default:
             break;
         }
