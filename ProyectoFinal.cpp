@@ -12,6 +12,7 @@
 #include "gotoxy.h"
 #include "Marcas.h"
 #include "Proveedores.h"
+#include "Cliente.h"
 
 using namespace std;
 
@@ -19,6 +20,7 @@ Ventas* super = new Ventas();
 empleados* emp = new empleados();
 Marcas* marc = new Marcas();
 Proveedores* prov = new Proveedores();
+Cliente* clie = new Cliente
 int opcionm;
 
 void lineas(int x, int y, string xx) {
@@ -127,10 +129,10 @@ void crud(string tipo, int opcionm) {
     case 1:
         switch (opcionm)
         {
-        case 1: cout << "Ingresar clientes"; break;
-        case 2: cout << "Mostrar clientes"; break;
-        case 3: cout << "Modificar clientes"; break;
-        case 4: cout << "Eliminar clientes"; break;
+        case 1: system("cls"); clie->crear(); break;
+        case 2: system("cls"); clie->leer(); break;
+        case 3: system("cls"); clie->actualizar(); break;
+        case 4: system("cls"); clie->eliminar(); break;
         default:
             break;
         }
