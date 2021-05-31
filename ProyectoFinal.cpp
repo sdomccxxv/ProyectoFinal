@@ -205,7 +205,8 @@ void crud(string tipo, int opcionm) {
         {
         case 1: ventas(); break;
         case 2: system("cls"); mostrarventa();  break;
-        case 3: system("cls"); super->eliminarventa(); break;
+        case 3: system("cls"); gotoxy(30, 15); system("color 4"); cout << "La factura no se puede modificar, eliminela y cree una nueva"; cin.get(); break;
+        case 4: system("cls"); super->eliminarventa(); break;
         default:
             break;
         }

@@ -211,6 +211,9 @@ public:
 			cout << "Agregar mas? (S/N): ";
 			gotoxy(100, 7);
 			cin >> SN;
+			if (SN == 'N' || SN == 'n') {
+				return;
+			}
 			f++;
 			y += 2;
 			
@@ -349,6 +352,7 @@ public:
 
 	void eliminarventa() {
 
+		gotoxy(15, 15);
 		int fact;
 		cout << "Ingrese la factura que desea eliminar: ";
 		cin >> fact;

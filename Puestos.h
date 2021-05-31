@@ -27,12 +27,10 @@ public:
 		conexion cn = conexion();
 		cn.abrir_conexion();
 		if (cn.getConectar()) {
-			string puesto, id;
-			cout << "Ingrese el Id que corresponde " << endl;
-			cin >> id;
+			string puesto;
 			cout << "Ingrese puesto: " << endl;
 			cin >> puesto;
-			string insert = "INSERT INTO puestos (idpuesto,puesto) VALUES ('" + id + "','" + puesto + "')";
+			string insert = "INSERT INTO puestos (puesto) VALUES ('" + puesto + "')";
 			const char* i = insert.c_str();
 			q_estado = mysql_query(cn.getConectar(), i);
 			if (!q_estado) {
@@ -81,10 +79,10 @@ public:
 			int q_estado;
 			string  puesto;
 
-			cout << "Ingrese Puesto que decea actualizar : " << endl;
+			cout << "Ingrese Puesto que desea actualizar : " << endl;
 			cin >> puesto;
 
-			string update = "UPDATE puestos SET puesto = '" + puesto + "' WHERE puesto =  puesto";
+			string update = "UPDATE puestos SET puesto = '" + puesto + "' WHERE puesto = " + puesto + ";";
 			const char* i = update.c_str();
 			q_estado = mysql_query(cn.getConectar(), i);
 			if (!q_estado) {
