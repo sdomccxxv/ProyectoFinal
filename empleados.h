@@ -46,9 +46,8 @@ public:
 		if (cn.getConectar()) {
 
 			string t = to_string(telefono);
+			string gen;
 
-			cout << "Ingrese su Id de empleado " << endl;
-			cin >> idemple;
 			cout << "Ingrese Nombres: " << endl;
 			cin.ignore();
 			getline(cin, nombres);
@@ -56,8 +55,16 @@ public:
 			cin.ignore();
 			getline(cin, apellidos);
 
-			/*cout << "Ingrese su genero mujer = 1 hombre = 0" << endl;
-				cin >> genero;*/
+			cout << "Ingrese su genero (F/M)" << endl;
+			cin >> genero;
+			cin.ignore();
+
+			if (genero == "F") {
+				gen = "1";
+			}
+			else {
+				gen = "0";
+			}
 
 			cout << "Ingrese su direccion " << endl;
 			getline(cin, direccion);
@@ -67,14 +74,14 @@ public:
 			cout << "Ingrese DPI: " << endl;
 			cin.ignore();
 			getline(cin, dpi);
-			cout << "Ingrese su fecha nacimiento " << endl;
+			cout << "Ingrese su fecha nacimiento (año-mes-dia)" << endl;
 			getline(cin, fecha_nacimiento);
 			cout << "Ingrese el ID_puesto de la tabla puesto para poder realizar la incercion: " << endl;
 			getline(cin, id_puesto);
-			cout << "Ingrese fecha de inicio de labores " << endl;
+			cout << "Ingrese fecha de inicio de labores (año-mes-dia)" << endl;
 			getline(cin, fecha_iniciolabor);
 
-			string insert = "INSERT INTO empleados(idEmpleado,nombres,apellidos,direccion,telefono,DPI,genero,fecha_nacimiento,idPuesto,fecha_inicio_labores)VALUES('" + idemple + "', '" + nombres + "', '" + apellidos + "', '" + direccion + "', '" + t + "', '" + dpi + "', '" + genero + "', '" + fecha_nacimiento + "', '" + id_puesto + "', '" + fecha_iniciolabor + "', current_time()); ";
+			string insert = "INSERT INTO empleados(nombres,apellidos,direccion,telefono,DPI,genero,fecha_nacimiento,idPuesto,fecha_inicio_labores, fechaingreso) VALUES('" + nombres + "', '" + apellidos + "', '" + direccion + "', '" + t + "', '" + dpi + "', " + gen + ", '" + fecha_nacimiento + "', " + id_puesto + ", '" + fecha_iniciolabor + "', current_time()); ";
 
 			const char* i = insert.c_str();
 
@@ -85,6 +92,7 @@ public:
 			}
 			else {
 				cout << "xxxx Error al Ingresar xxxxx" << endl;
+				cout << insert << endl << mysql_error(cn.getConectar()) << endl;
 			}
 		}
 		else {
@@ -103,7 +111,7 @@ public:
 		cn.abrir_conexion();
 
 		if (cn.getConectar()) {
-			string consulta = "select * from empleados";
+			string consulta = "SELECT idempleado, nombres, apellidos, direccion, telefono, dpi, CASE genero WHEN 1 THEN 'Masculino' WHEN 0 THEN 'Femenino' END as 'genero', fecha_nacimiento, p.puesto, fecha_inicio_labores FROM empleados e INNER JOIN puestos p ON e.idPuesto = p.idPuesto;";
 
 			const char* c = consulta.c_str();
 			q_estado = mysql_query(cn.getConectar(), c);
@@ -113,7 +121,7 @@ public:
 
 				cout << "-----------------------------empleados----------------------------" << endl;
 				while (fila = mysql_fetch_row(resultado)) {
-					cout << fila[0] << " , " << fila[1] << " , " << fila[2] << " , " << fila[3] << " , " << fila[4] << " , " << fila[5] << " , " << fila[6] << " , " << fila[7] <<" , " << fila[8] << " , " << fila[9] << " , " << fila[10] << endl;
+					cout << fila[0] << " , " << fila[1] << " , " << fila[2] << " , " << fila[3] << " , " << fila[4] << " , " << fila[5] << " , " << fila[6] << " , " << fila[7] <<" , " << fila[8] << " , " << fila[9] << endl;
 				}
 			}
 			else {
@@ -133,32 +141,35 @@ public:
 		if (cn.getConectar()) {
 			int q_estado;
 
-			cout << "Ingrese el Nombre del Empleado que desea Actualizar: " << endl;
+			cout << "Ingrese el dpi del Empleado que desea Actualizar: " << endl;
 			cin.ignore();
-			cin >> nombres;
+			cin >> dpi;
+			cout << "Ingrese Nombres: " << endl;
+			cin.ignore();
+			getline(cin, nombres);
 			cout << "Ingrese Apellido: " << endl;
+			cin.ignore();
 			getline(cin, apellidos);
+			cout << apellidos;
 			cout << "Ingrese direccion: " << endl;
 			cin.ignore();
 			getline(cin, direccion);
 			cout << "Ingrese DPI: " << endl;
 			getline(cin, dpi);
-			cout << "Ingrese genero mujer = 1 hombre = 2: " << endl;
+			cout << "Ingrese genero mujer = 1 hombre = 0: " << endl;
 			cin >> genero;
 			cin.ignore();
 			cout << "Ingrese fecha nacimiento: " << endl;
-			getline(cin, fecha_nacimiento);
-			cout << "Ingrese fecha inicio labores: " << endl;
-			getline(cin, fecha_iniciolabor);
+			cin>>fecha_nacimiento;
 			cout << "Ingrese ID puesto : " << endl;
+			cin.ignore();
 			getline(cin, id_puesto);
-			cout << "Ingrese fecha inicio labores : " << endl;
-			getline(cin, fecha_iniciolabor);
+			cout << "Ingrese fecha inicio labores: " << endl;
+			cin>>fecha_iniciolabor;
 
 			string tel = to_string(telefono);
 
-			string update = "UPDATE empleados SET  fecha_nacimiento ='" + fecha_nacimiento + "',fecha_inico_labores ='" + fecha_iniciolabor + "',apellidos ='" + apellidos + "',direccion ='" + direccion + "',telefono = '" + tel + "',DPI ='" + dpi + "',genero ='" + genero + "'  WHERE nombres = '" + nombres + "'";
-
+			string update = "UPDATE empleados SET nombres = '" + nombres + "', apellidos = '" + apellidos + "', direccion = '" + direccion + "', telefono = '" + tel + "', dpi = '" + dpi + "', genero = " + genero + ", fecha_nacimiento = '" + fecha_nacimiento + "', idPuesto = "+ id_puesto + ", fecha_inicio_labores = '" + fecha_iniciolabor + "' WHERE dpi = '"+ dpi +"'";
 			const char* i = update.c_str();
 
 			q_estado = mysql_query(cn.getConectar(), i);
@@ -168,6 +179,7 @@ public:
 			}
 			else {
 				cout << "xxx Error al actualizar el Registro xxx " << endl;
+				cout << update << endl << mysql_error(cn.getConectar()) << endl;
 			}
 		}
 		else {
