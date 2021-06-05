@@ -14,6 +14,7 @@
 #include "Proveedores.h"
 #include "Cliente.h"
 #include "Puestos.h"
+#include "compras.h"
 
 using namespace std;
 
@@ -23,6 +24,8 @@ Marcas* marc = new Marcas();
 Proveedores* prov = new Proveedores();
 Cliente* clie = new Cliente();
 Puestos * pue = new Puestos();
+compras* comp = new compras();
+
 int opcionm;
 
 void lineas(int x, int y, string xx) {
@@ -52,6 +55,7 @@ void ventas();
 void menu();
 void crud(string tipo, int opcionm);
 void mostrarventa();
+void comprass();
 
 int main()
 {
@@ -65,6 +69,7 @@ int main()
 void menu() {
     int opcionm;
     system("cls");
+    system("color 2");
     borde();
 
     string str = "MENU PRINCIPAL";
@@ -205,7 +210,22 @@ void crud(string tipo, int opcionm) {
         {
         case 1: ventas(); break;
         case 2: system("cls"); mostrarventa();  break;
-        case 3: system("cls"); gotoxy(30, 15); system("color 4"); cout << "La factura no se puede modificar, eliminela y cree una nueva"; cin.get(); break;
+        case 3: 
+            char f;
+            system("cls"); 
+            gotoxy(30, 15); 
+            system("color 4"); 
+            cout << "La factura no se puede modificar, eliminela y cree una nueva" << endl;
+            gotoxy(45, 16);
+            cout << "Desea eliminar la factura S/N: ";
+            cin >> f;
+            if (f == 'S' || f == 's') {
+                super->eliminarventa();
+            }
+            else {
+                menu();
+                break;
+            }
         case 4: system("cls"); super->eliminarventa(); break;
         default:
             break;
@@ -215,7 +235,9 @@ void crud(string tipo, int opcionm) {
     case 8:
         switch (opcionm)
         {
-        case 1: cout << "Ingresar Compras"; break;
+        case 1: 
+            comprass();
+            break;
         case 2: cout << "Mostrar Compras"; break;
         case 3: cout << "Modificar Compras"; break;
         case 4: cout << "Eliminar Compras"; break;
@@ -257,4 +279,19 @@ void mostrarventa() {
     cin >> f;
 
     super->mostrarventa(f);
+}
+
+void comprass() {
+    string nombre, nitp;
+
+    system("cls");
+
+    gotoxy(5, 3);
+    cout << "Fecha: " << super->fecha() << endl;
+
+    comp->no_orden();
+
+    gotoxy(5, 4); cout << "NIT Proveedor: ";
+    cin >> nitp;
+    comp->buscarprov(nitp);
 }

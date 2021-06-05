@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cliente.h" />
+    <ClInclude Include="compras.h" />
     <ClInclude Include="conexion.h" />
     <ClInclude Include="empleados.h" />
     <ClInclude Include="gotoxy.h" />

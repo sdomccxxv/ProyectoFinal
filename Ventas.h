@@ -5,8 +5,11 @@
 
 #include "conexion.h"
 #include "gotoxy.h"
+#include "Cliente.h"
 
 using namespace std;
+
+Cliente* client = new Cliente();
 
 class Ventas
 {
@@ -73,7 +76,7 @@ public:
 					cout << "El NIT del cliente no se encuentra en la base, desea agregarlo S/N: ";
 					cin >> addnit;
 					if (addnit == 'S') {
-						cout << "Agregar "; // aqui debe ir la funcion para agregar nuevo cliente.
+						client->crear(); // aqui debe ir la funcion para agregar nuevo cliente.
 					}
 					else if(addnit == 'N')
 					{
