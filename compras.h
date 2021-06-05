@@ -8,8 +8,8 @@ class compras
 {
 public:
 	struct compra {
-		int norden, idprov, fecha, idprod, cant, idcomp;
-		float precio, total;
+		int norden = 0, idprov = 0, fecha = 0, idprod = 0, cant = 0, idcomp = 0;
+		float precio = 0, total = 0;
 		string prod, nitprov;
 	}comprs[100];
 
@@ -117,7 +117,7 @@ public:
 		if (cn.getConectar()) {
 			string ord = to_string(no_orden()+1);
 
-			string insertc = "INSERT INTO compras (no_orden_compra,idproveedor,fecha_orden,fecha_ingreso) VALUES(" + ord + ", " + pr + ", " + fecha() + ", now());";
+			string insertc = "INSERT INTO compras (no_orden_compra,idproveedor,fecha_orden,fecha_ingreso) VALUES(" + ord + ", " + pr + ", '" + fecha() + "', now());";
 
 			const char* i = insertc.c_str();
 			q_estado = mysql_query(cn.getConectar(), i);
@@ -171,7 +171,7 @@ public:
 
 					if (mysql_num_rows(resultado) > 0) {
 						while (fila = mysql_fetch_row(resultado)) {
-							registrocompras.precio = stof(fila[6]);
+							registrocompras.precio = stof(fila[5]);
 							string price = to_string(registrocompras.precio);
 
 							gotoxy(x + 15, y);
@@ -222,6 +222,127 @@ public:
 			f++;
 			y += 2;
 		} while (SN == 'S' || SN == 's');
+	}
+
+	void mostrarcompra(int orden) {
+
+		//int prod;
+		string prodto, canti;
+
+		cn.abrir_conexion();
+
+		if (cn.getConectar()) {
+			string o = to_string(orden);
+			string strc = "SELECT c.no_orden_compra, pr.nit, pr.proveedor, c.fecha_orden FROM compras c INNER JOIN proveedores pr ON c.idproveedor = pr.idproveedor WHERE c.no_orden_compra = " + o;
+
+			const char* c = strc.c_str();
+			q_estado = mysql_query(cn.getConectar(), c);
+
+			if (!q_estado) {
+				resultado = mysql_store_result(cn.getConectar());
+				while (fila = mysql_fetch_row(resultado)) {
+
+					system("cls");
+					gotoxy(5, 3);
+					cout << "Fecha: " << fila[3];
+					gotoxy(25, 3);
+					cout << "No Orden: " << fila[0];
+					gotoxy(5, 4);
+					cout << "NIT Proveedor: " << fila[1];
+					gotoxy(45, 4);  cout << "Proveedor: " << fila[2] << endl;
+
+					gotoxy(10, 8); cout << "ID Producto";
+					gotoxy(27, 8); cout << "Producto";
+					gotoxy(57, 8); cout << "Cantidad";
+					gotoxy(72, 8); cout << "Precio Unitario";
+					gotoxy(90, 8); cout << "Precio Total";
+
+					string idorden = to_string(atoi(fila[0]));
+
+					string strvd = "SELECT p.idproducto, p.descripcion, cd.cantidad, cd.precio_costo_unitario, (cd.cantidad * cd.precio_costo_unitario) as total FROM compras_detalle cd INNER JOIN compras c ON cd.idcompra = c.idcompra INNER JOIN productos p ON cd.idproducto = p.idproducto WHERE c.no_orden_compra = " + idorden;
+
+					const char* cc = strvd.c_str();
+					q_estado = mysql_query(cn.getConectar(), cc);
+
+					if (!q_estado) {
+						resultado = mysql_store_result(cn.getConectar());
+
+						if (mysql_num_rows(resultado) > 0) {
+							int y = 10, x = 15;
+							while (fila = mysql_fetch_row(resultado)) {
+
+								gotoxy(x, y++); cout << fila[0];
+								gotoxy(x + 15, y - 1); cout << fila[1];
+								gotoxy(x + 47, y - 1); cout << atoi(fila[2]);
+								gotoxy(x + 60, y - 1); cout << stof(fila[3]);
+								gotoxy(x + 80, y - 1); cout << stof(fila[4]);
+							}
+
+							char SN;
+							gotoxy(38, 20);
+							cout << "Desea modificar los productos vendidos (S/N): ";
+							cin >> SN;
+
+							if (SN == 'S' || SN == 's') {
+								//facturar();
+							}
+						}
+					}
+					else {
+						cout << "Error al consultar encabezado venta" << endl;
+						cout << strvd << endl << mysql_error(cn.getConectar()) << endl;
+					}
+				}
+			}
+			else {
+				cout << "Error al consultar..." << endl;
+			}
+		}
+		else {
+			cout << "Conexion fallida..." << endl;
+		}
+		cn.cerrar_conexion();
+
+	}
+
+	void eliminarcompra() {
+
+		gotoxy(15, 15);
+		int ord;
+		cout << "Ingrese la orden que desea eliminar: ";
+		cin >> ord;
+
+		cn.abrir_conexion();
+
+		if (cn.getConectar()) {
+
+			string o = to_string(ord);
+			string eliminard = "DELETE FROM compras_detalle WHERE idcompra = (SELECT idcompra FROM compras WHERE no_orden_compra = '" + o + "');";
+			string eliminarv = "DELETE FROM compras WHERE no_orden_compra = '" + o + "';";
+
+			const char* i = eliminard.c_str();
+			q_estado = mysql_query(cn.getConectar(), i);
+
+			if (!q_estado) {
+				cout << "Eliminacion exitosa..." << endl;
+			}
+			else {
+				cout << "Error al eliminar..." << endl;
+				cout << eliminard << endl << mysql_error(cn.getConectar()) << endl;
+			}
+
+			const char* ii = eliminarv.c_str();
+			q_estado = mysql_query(cn.getConectar(), ii);
+
+			if (!q_estado) {
+				cout << "Eliminacion exitosa..." << endl;
+				return;
+			}
+			else {
+				cout << "Error al eliminar..." << endl;
+				cout << eliminarv << endl << mysql_error(cn.getConectar()) << endl;
+			}
+		}
 	}
 };
 

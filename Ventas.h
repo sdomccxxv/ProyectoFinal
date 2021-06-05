@@ -13,7 +13,7 @@ Cliente* client = new Cliente();
 
 class Ventas
 {
-protected: int idcl, idemp, idpr;
+protected: int idcl = 0, idemp = 0, idpr = 0;
 		 string serie, fechafact;
 
 public:
@@ -262,7 +262,7 @@ public:
 
 	void mostrarventa(int nofact) {
 
-		int prod;
+		//int prod;
 		string prodto, canti;
 
 		cn.abrir_conexion();

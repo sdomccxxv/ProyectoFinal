@@ -56,6 +56,7 @@ void menu();
 void crud(string tipo, int opcionm);
 void mostrarventa();
 void comprass();
+void mostrarcompras();
 
 int main()
 {
@@ -238,9 +239,9 @@ void crud(string tipo, int opcionm) {
         case 1: 
             comprass();
             break;
-        case 2: cout << "Mostrar Compras"; break;
+        case 2: system("cls"); mostrarcompras(); break;
         case 3: cout << "Modificar Compras"; break;
-        case 4: cout << "Eliminar Compras"; break;
+        case 4: system("cls"); comp->eliminarcompra(); break;
         default:
             break;
         }
@@ -294,4 +295,14 @@ void comprass() {
     gotoxy(5, 4); cout << "NIT Proveedor: ";
     cin >> nitp;
     comp->buscarprov(nitp);
+}
+
+void mostrarcompras() {
+
+    borde();
+    int f;
+    gotoxy(5, 4); cout << "Ingrese el numero de orden que desea mostrar: ";
+    cin >> f;
+
+    comp->mostrarcompra(f);
 }
