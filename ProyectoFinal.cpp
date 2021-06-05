@@ -90,10 +90,10 @@ void menu() {
     cin >> opcionm;
 
     switch (opcionm) {
-    case 1: crud("INGRESAR", opcionm); break;
-    case 2: crud("MOSTRAR", opcionm); break;
-    case 3: crud("MODIFICAR", opcionm); break;
-    case 4: crud("ELIMINAR", opcionm); break;
+    case 1: system("color 1"); crud("INGRESAR", opcionm); break;
+    case 2: system("color 5"); crud("MOSTRAR", opcionm); break;
+    case 3: system("color 6"); crud("MODIFICAR", opcionm); break;
+    case 4: system("color 4"); crud("ELIMINAR", opcionm); break;
     }
 }
 
