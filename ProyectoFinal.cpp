@@ -15,6 +15,7 @@
 #include "Cliente.h"
 #include "Puestos.h"
 #include "compras.h"
+#include "Productos.h"
 
 using namespace std;
 
@@ -25,6 +26,7 @@ Proveedores* prov = new Proveedores();
 Cliente* clie = new Cliente();
 Puestos * pue = new Puestos();
 compras* comp = new compras();
+Productos* product = new Productos();
 
 int opcionm;
 
@@ -173,10 +175,10 @@ void crud(string tipo, int opcionm) {
     case 4:
         switch (opcionm)
         {
-        case 1: cout << "Ingresar productos"; break;
-        case 2: cout << "Mostrar productos"; break;
-        case 3: cout << "Modificar productos"; break;
-        case 4: cout << "Eliminar productos"; break;
+        case 1: system("cls"); product->crear();  break;
+        case 2: system("cls"); product->leer();  break;
+        case 3: system("cls"); product->actualizar();  break;
+        case 4: system("cls"); product->eliminar();  break;
         default:
             break;
         }
